@@ -20,6 +20,7 @@
 struct nodevalue{
     Node* node;
     unsigned int cost; // A*는 cost가 양의 값이여야
+    unsigned int time; // 이 시간보다 커야.
 };
 auto nodevalueCompare = [](const nodevalue* p1, const nodevalue* p2) { return p1->cost < p2->cost; };
 // struct nodevalueCompare{
@@ -92,7 +93,7 @@ class Graph{
         void insert_node(int id, Coordinate cord);
         // Node* find_node(int nodeId);
         void insert_service(Service* service);
-        int find_route(int start, int dest, Routeoption routeoption );
+        int find_route(int start, int dest, Routeoption routeoption, unsigned int startTime);
 };
 
 #endif

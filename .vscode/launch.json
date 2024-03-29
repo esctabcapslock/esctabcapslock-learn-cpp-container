@@ -11,7 +11,7 @@
             "preLaunchTask": "build with make"
         },
 
-        {
+       /* {
             "name": "C/C++: clang++ build and debug active file",
             "type": "cppdbg", // lldb cppdbg
             "request": "launch",
@@ -23,6 +23,6 @@
             "externalConsole": false,
             "MIMode": "lldb",
             "preLaunchTask": "build with make"
-        }
+        }*/
     ]
 }

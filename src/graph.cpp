@@ -123,25 +123,32 @@ void Graph::insert_service(Service *svc)
         if (!nodeList.contains(nodeID))
         {
             throw InitException("정의되지 않는 node를 포함하는 service");
+        }else{
+            Node* node = nodeList[nodeID];
+            node->addService(svc);
         }
     }
 
     serviceList.push_back(svc);
 };
 
-int Graph::find_route(int start, int dest, Routeoption routeoption){
+int Graph::find_route(int start, int dest, Routeoption routeoption, unsigned int startTime = 0){
 
     // 우선 초기화
     init_node();
+    std::cout << std::format("graph.cpp [find_route]: {}->{}", start, dest) << std::endl;
 
     // 무결성 체크
     if (!nodeList.contains(start) || !nodeList.contains(dest)){
         throw InitException("start, dest가 존재하지 않는 옵션임");
     }
+    if (start == dest){
+        throw InitException("start, dest가 같음.");
+    }
 
     Node *st = nodeList[start];
     Node *fn = nodeList[dest];
-    nodevalue p = {st, 0};
+    nodevalue p = {st, startTime, startTime};
     nodevalue *pp = &p;
 
     std::unordered_map<Node *, nodevalue *> visitList; // 검색
@@ -153,28 +160,32 @@ int Graph::find_route(int start, int dest, Routeoption routeoption){
     {
         for (auto sv = pp->node->serviceBegin(); sv != pp->node->serviceEnd(); sv++){
             // startNodeId, int startTime
-            std::cout << "hello3" << std::endl;
+            std::cout << std::format("graph - for, serviceId:{} at pp.id=={}", sv[0]->serviceinfo->serviceId, pp->node->get_nodeId()) << std::endl;
 
-            std::optional<nextNodeInfo> opt_nodeinfo = sv[0]->nextStop(pp->node->get_nodeId(), pp->cost);
+            std::optional<nextNodeInfo> opt_nodeinfo = sv[0]->nextStop(pp->node->get_nodeId(), pp->time);
             if(!opt_nodeinfo.has_value()) continue;
 
             nextNodeInfo nodeinfo = opt_nodeinfo.value();
             Node* nextNode = nodeList[nodeinfo.nodeId];
 
-            std::cout << std::format("nodeId:{}, ", nodeinfo.nodeId) <<   std::endl;
+            std::cout << std::format("nodeinfo: [id:={}, time={}] ", nodeinfo.nodeId, nodeinfo.time) <<   std::endl;
             
             // item- > node 연결된 노드
             // item -> vertexvalue 간선가중치
             // nodevalue*
             // unsigned int newweight = item->vertexvalue + p.cost + dist(fn->get_cord(), item->node->get_cord()) - dist(fn->get_cord(), pp->node->get_cord());
-            unsigned int newweight = p.cost + dist(fn->get_cord(), nextNode->get_cord()) - dist(fn->get_cord(), pp->node->get_cord());
+            unsigned int newweight = nodeinfo.time + dist(fn->get_cord(), nextNode->get_cord()) - dist(fn->get_cord(), pp->node->get_cord());
+            std::cout << std::format("newweight is {} =  p.cost({})+ dist1({}) - dist2({})", newweight, nodeinfo.time , dist(fn->get_cord(), nextNode->get_cord()) , dist(fn->get_cord(), pp->node->get_cord())) << std::endl;
 
             nodevalue* item = visitList[nextNode];
-            if (item == nullptr){
+            if (item == nullptr){ // 방문한적 없음 -> 그러니 큐에도 없음.
                 item = new nodevalue();
                 visitList[nextNode] = item;
                 item->node = nextNode;
                 item->cost = newweight;
+                item->time = nodeinfo.time;
+                std::cout << std::format("priorityQueue 삽입 (nodeID:{})", nextNode->get_nodeId()) << std::endl;
+                priorityQueue.insert(item);
             }
 
             if (priorityQueue.contains(item)){ // 우선순위 큐 OK
@@ -182,25 +193,34 @@ int Graph::find_route(int start, int dest, Routeoption routeoption){
                     item->cost = newweight; // 갱신
                 }
             }
-            else if (!visitList.contains(item->node)){ // 큐에 없고 방문한적 없음
-                // 할당
-                nodevalue *p = new nodevalue();
-                p->node = item->node;
-                p->cost = newweight;
+            // else if (!visitList.contains(item->node)){ // 큐에 없고 방문한적 없음
+            //     // 할당
+            //     nodevalue *p = new nodevalue();
+            //     p->node = item->node;
+            //     p->cost = newweight;
 
-                // priorityQueue[item->node].cost = p; // 역시 큐에 삽빕
-                priorityQueue.insert(p);
-            }
+            //     // priorityQueue[item->node].cost = p; // 역시 큐에 삽빕
+            //     priorityQueue.insert(p);
+            // }
         }
 
         // 가장 작은 값 가져오기
         auto minv = priorityQueue.begin();
         if (minv == priorityQueue.end()){ // 빔
+            std::cout << "큐 빔" << std::endl;
             return -1;
 
         }else{
             pp = (*minv);
+            priorityQueue.erase(pp); // 큐에서 삭제
         }
+
+        if (pp->node->get_nodeId() == dest){
+            std::cout << "찾음" << std::endl;
+            break;
+        }
+
+
     }
 
     // TODO: 할당 삭제 코드.
@@ -211,4 +231,5 @@ int Graph::find_route(int start, int dest, Routeoption routeoption){
     }
     visitList.clear();
     priorityQueue.clear();
+    return pp->cost;
 }

@@ -40,9 +40,9 @@ int main(){
         fscanf(inputFile, "%d%d",&id, &tableLen);
         int* stop_arr = new int[tableLen];
         int* time_arr = new int[tableLen];
-        ServiceInfo info;
-        info.serviceId = id;
-        info.serviceType = ServiceType::Timetable;
+        ServiceInfo* info = new ServiceInfo;
+        info->serviceId = id;
+        info->serviceType = ServiceType::Timetable;
         for(int j=0; j<tableLen; j++){
             fscanf(inputFile, "%d",stop_arr+j);
         }
@@ -51,11 +51,11 @@ int main(){
             fscanf(inputFile, "%d",time_arr+j);
         }
 
-        Service* input_service = new Service(tableLen, stop_arr, nullptr, 1, &time_arr, &info);
+        Service* input_service = new Service(tableLen, stop_arr, nullptr, 1, &time_arr, info);
         mapweb->insert_service(input_service);
     }
 
-    mapweb->find_route(1,3,Routeoption::TimeFirst);
+    mapweb->find_route(1,10,Routeoption::TimeFirst, 0);
 
     fclose(inputFile);
     delete mapweb;

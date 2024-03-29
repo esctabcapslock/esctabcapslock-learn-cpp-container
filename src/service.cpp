@@ -20,19 +20,20 @@ std::optional<nextNodeInfo> Service::nextStop(int startNodeId, int startTime){
         // 마지막 정차역입니다.
         return std::nullopt;
     }
-    int nextNodeIndex = (idx_start - stopTable)/sizeof(int) + 1;
+    // int nextNodeIndex = ((ptrdiff_t)(idx_start - stopTable))/sizeof(int) + 1;
+    int nextNodeIndex = idx_start - stopTable + 1;
 
     switch (serviceinfo->serviceType)
     {
     case ServiceType::Immediate:
-        return std::optional<nextNodeInfo>({*(timeTable)[nextNodeIndex], stopTable[nextNodeIndex]});
+        return std::optional<nextNodeInfo>({stopTable[nextNodeIndex], *(timeTable)[nextNodeIndex]});
     case ServiceType::Periodically:
-        return std::optional<nextNodeInfo>({*(timeTable)[nextNodeIndex], stopTable[nextNodeIndex]});
+        return std::optional<nextNodeInfo>({stopTable[nextNodeIndex], *(timeTable)[nextNodeIndex]});
     case ServiceType::Timetable:
             
             for (int i=0; i<timeTableLen; i++){
-                if (timeTable[i][nextNodeIndex] > startTime){
-                    return std::optional<nextNodeInfo>({timeTable[i][nextNodeIndex], stopTable[nextNodeIndex]});
+                if (timeTable[i][nextNodeIndex] >= startTime){
+                    return std::optional<nextNodeInfo>({stopTable[nextNodeIndex], timeTable[i][nextNodeIndex]});
                 }
             }
         // 만족하는 열차가 없습니다. 

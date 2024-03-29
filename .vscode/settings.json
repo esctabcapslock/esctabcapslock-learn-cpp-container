@@ -1,5 +1,6 @@
 {
     "C_Cpp.default.cppStandard": "c++23", // 추가해야함.
+    "C_Cpp.default.cStandard":"c23",
     "files.associations": {
         "*.embeddedhtml": "html",
         "iostream": "cpp",
@@ -58,6 +59,8 @@
         "memory_resource": "cpp",
         "utility": "cpp",
         "climits": "cpp",
-        "__memory": "cpp"
+        "__memory": "cpp",
+        "iomanip": "cpp",
+        "stack": "cpp"
     }
 }
