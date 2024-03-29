@@ -1,6 +1,8 @@
 #include "graph.hxx"
 
 
+#include<iostream>
+#include<format>
 /*
 serviceValue::serviceValue(Service* sv, int nodeId, int starttime){
     service = sv;
@@ -116,6 +118,7 @@ void Graph::insert_service(Service *svc)
     for (int i = 0; i < svc->tableLen; i++)
     {
         int nodeID = svc->stopTable[i];
+        // std::cout << "nodeID:" << nodeID << "\t, i:" << i << "\t, pos:" << svc->stopTable + i  << std::endl;
         // std::map<int, Node*, std::less> abcde;
         if (!nodeList.contains(nodeID))
         {
@@ -126,11 +129,16 @@ void Graph::insert_service(Service *svc)
     serviceList.push_back(svc);
 };
 
-int Graph::find_route(int start, int dest, Routeoption *routeoption)
-{
+int Graph::find_route(int start, int dest, Routeoption routeoption){
 
     // 우선 초기화
     init_node();
+
+    // 무결성 체크
+    if (!nodeList.contains(start) || !nodeList.contains(dest)){
+        throw InitException("start, dest가 존재하지 않는 옵션임");
+    }
+
     Node *st = nodeList[start];
     Node *fn = nodeList[dest];
     nodevalue p = {st, 0};
@@ -140,16 +148,20 @@ int Graph::find_route(int start, int dest, Routeoption *routeoption)
     // std::unordered_set<Node*> visitSet; // 검색
     // std::set<nodevalue *, std::vector<nodevalue *>, nodevalueCompare> priorityQueue; // 삭제.
     std::set<nodevalue *,  decltype(nodevalueCompare)> priorityQueue; // 삭제.
-
+    std::cout << "hello2" << std::endl;
     while (true)
     {
         for (auto sv = pp->node->serviceBegin(); sv != pp->node->serviceEnd(); sv++){
             // startNodeId, int startTime
+            std::cout << "hello3" << std::endl;
+
             std::optional<nextNodeInfo> opt_nodeinfo = sv[0]->nextStop(pp->node->get_nodeId(), pp->cost);
             if(!opt_nodeinfo.has_value()) continue;
 
             nextNodeInfo nodeinfo = opt_nodeinfo.value();
             Node* nextNode = nodeList[nodeinfo.nodeId];
+
+            std::cout << std::format("nodeId:{}, ", nodeinfo.nodeId) <<   std::endl;
             
             // item- > node 연결된 노드
             // item -> vertexvalue 간선가중치

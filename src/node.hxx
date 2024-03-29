@@ -15,11 +15,7 @@ struct Coordinate
     /* data */
 };
 
-int dist(Coordinate a, Coordinate b)
-{
-    return sqrt(
-        (a.latitude - b.latitude) * (a.latitude - b.latitude) + (a.longitude - b.longitude) * (a.longitude - b.longitude));
-}
+int dist(Coordinate a, Coordinate b);
 
 class Node{
 private:

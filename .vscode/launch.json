@@ -1,10 +1,19 @@
 {
     "version": "0.2.0",
     "configurations": [
+        {
+            "name": "do lldb debug!!",
+            "type": "lldb", // https://github.com/microsoft/vscode-cpptools/issues/5805#issuecomment-1416061338. Mac에서 lldb쓰려면 확장을 바꿔야함.
+            "request": "launch",
+            "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
+            "args": [],
+            "cwd": "${fileDirname}",
+            "preLaunchTask": "build with make"
+        },
 
         {
             "name": "C/C++: clang++ build and debug active file",
-            "type": "cppdbg",
+            "type": "cppdbg", // lldb cppdbg
             "request": "launch",
             "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
             "args": [],

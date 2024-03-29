@@ -1,7 +1,7 @@
 #include<algorithm> // for std::find
 #include<vector>
 #include "runerror.hxx"
-#include<optional>
+#include <optional>
 #ifndef SERVICE_H  // 헤더 파일 중복 포함 방지를 위한 전처리 지시문
 #define SERVICE_H
 

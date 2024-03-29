@@ -92,7 +92,7 @@ class Graph{
         void insert_node(int id, Coordinate cord);
         // Node* find_node(int nodeId);
         void insert_service(Service* service);
-        int find_route(int start, int dest, Routeoption* routeoption );
+        int find_route(int start, int dest, Routeoption routeoption );
 };
 
 #endif
