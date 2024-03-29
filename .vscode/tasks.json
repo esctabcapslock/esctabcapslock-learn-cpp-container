@@ -1,0 +1,12 @@
+{
+    "tasks": [
+        {
+            "label": "build with make",
+            "command": "make",
+            "args": [
+                "${fileBasenameNoExtension}"
+            ]
+        }
+    ],
+    "version": "2.0.0"
+}
