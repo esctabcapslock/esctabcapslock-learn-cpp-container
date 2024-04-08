@@ -61,6 +61,8 @@
         "climits": "cpp",
         "__memory": "cpp",
         "iomanip": "cpp",
-        "stack": "cpp"
-    }
+        "stack": "cpp",
+        "list": "cpp"
+    },
+    "discord.enabled": true
 }

@@ -4,6 +4,9 @@ CFLAGS = --std=c++2b -Wall -g -O0
 SRC_DIR = src
 TEST_DIR = test
 BUILD_DIR = build
+LIBDIRS = vcpkg/installed/arm64-osx/debug/lib
+LIBS = xlsxio_read xlsxio_write expat minizip bz2 z
+INCLUDES = 	-Ivcpkg/installed/arm64-osx/include
 
 
 # 현재 빌드 디렉토리의 절대 경로를 가져오는 명령어
@@ -31,6 +34,10 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 test01: $(TEST_DIR)/test01.cpp $(OBJ_FILES)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
+
+testxlsx: data/ROK/metro/toTest1Format.cpp
+	$(CC) $(CFLAGS) $(INCLUDES)  $(foreach LIBDIR,$(LIBDIRS),-L$(LIBDIR)) $(foreach LIB,$(LIBS),-l$(LIB)) $^ -o $(BUILD_DIR)/$@ 
+	
 
 
 
