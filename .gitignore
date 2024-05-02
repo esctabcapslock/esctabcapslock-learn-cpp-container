@@ -1,0 +1,11 @@
+build/
+*.o
+*.out
+c++test/
+vcpkg
+*.xlsx
+*.kmz
+*.kml
+*.csv
+*.txt
+.DS_Store

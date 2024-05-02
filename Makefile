@@ -3,9 +3,12 @@ CFLAGS = --std=c++2b -Wall -g -O0
 # TARGET = my_program
 SRC_DIR = src
 TEST_DIR = test
+DATA_DIR = data
 BUILD_DIR = build
 LIBDIRS = vcpkg/installed/arm64-osx/debug/lib
 LIBS = xlsxio_read xlsxio_write expat minizip bz2 z
+INCLUDES = 	-Ivcpkg/installed/arm64-osx/include
+XMLLIBS = pugixml
 INCLUDES = 	-Ivcpkg/installed/arm64-osx/include
 
 
@@ -35,10 +38,18 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 test01: $(TEST_DIR)/test01.cpp $(OBJ_FILES)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
-testxlsx: data/ROK/metro/toTest1Format.cpp
+testxlsx: ${DATA_DIR}/ROK/metro/toTest1Format.cpp
 	$(CC) $(CFLAGS) $(INCLUDES)  $(foreach LIBDIR,$(LIBDIRS),-L$(LIBDIR)) $(foreach LIB,$(LIBS),-l$(LIB)) $^ -o $(BUILD_DIR)/$@ 
+
+testxml: ${DATA_DIR}/ROK/metro/readXmlToGetLocation.cpp
+	$(CC) $(CFLAGS) $(INCLUDES)  $(foreach LIBDIR,$(LIBDIRS),-L$(LIBDIR)) $(foreach LIB,$(XMLLIBS),-l$(LIB)) $^ -o $(BUILD_DIR)/$@ 
 	
 
+$(BUILD_DIR)/searchPoint.o: ${DATA_DIR}/ROK/rail/point/searchPoint.cpp
+	$(CC) $(CFLAGS) $^ -c -o $@
+	
+searchPointTest: $(TEST_DIR)/searchPointTest.cpp  $(BUILD_DIR)/searchPoint.o 
+	$(CC) $(CFLAGS) $^  -o $(BUILD_DIR)/$@ 
 
 
 debug: test01

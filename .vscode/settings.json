@@ -62,7 +62,10 @@
         "__memory": "cpp",
         "iomanip": "cpp",
         "stack": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "format": "cpp",
+        "fstream": "cpp",
+        "exception": "cpp"
     },
     "discord.enabled": true
 }

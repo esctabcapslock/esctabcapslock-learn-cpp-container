@@ -118,8 +118,7 @@ void Graph::insert_service(Service *svc)
     for (int i = 0; i < svc->tableLen; i++)
     {
         int nodeID = svc->stopTable[i];
-        // std::cout << "nodeID:" << nodeID << "\t, i:" << i << "\t, pos:" << svc->stopTable + i  << std::endl;
-        // std::map<int, Node*, std::less> abcde;
+
         if (!nodeList.contains(nodeID))
         {
             throw InitException("정의되지 않는 node를 포함하는 service");
